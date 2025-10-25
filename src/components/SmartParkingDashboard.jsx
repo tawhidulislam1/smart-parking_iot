@@ -28,19 +28,44 @@ const SmartParkingDashboard = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [bookings, setBookings] = useState([]);
+    const [activeSlots, setActiveSlots] = useState([]);
+
+    useEffect(() => {
+        if (!bookings || bookings.length === 0) return;
+
+        const now = new Date();
+
+        const activeBookings = bookings.filter(booking => {
+            let startDateTime = new Date(`${booking.date}T${booking.startTime}:00`);
+            let endDateTime = new Date(`${booking.date}T${booking.endTime}:00`);
 
 
-    // Firebase listener
+            return now >= startDateTime && now <= endDateTime;
+        });
+
+        const activeIds = activeBookings.map(b => b.id);
+
+
+        const slots = activeBookings.map(b => b.slotNumber);
+        setActiveSlots(slots);
+
+        console.log("Active Booking IDs:", activeIds);
+        console.log("Active Slots:", slots);
+
+    }, [bookings]);
+
+
+
+
     useEffect(() => {
         const parkingRef = ref(db, "Parking");
         onValue(parkingRef, (snapshot) => {
             const val = snapshot.val();
             if (val) setData(val);
-            val.Slot2 = true;
+            val.Slot1 = true
         });
     }, []);
 
-    // Start timers for occupied slots
     useEffect(() => {
         [1, 2, 3].forEach((i) => {
             const slotKey = `Slot${i}`;
@@ -48,7 +73,6 @@ const SmartParkingDashboard = () => {
                 const savedStart = localStorage.getItem(`timerStart_${slotKey}`);
                 const savedDuration = localStorage.getItem(`timerDuration_${slotKey}`);
                 if (savedStart && savedDuration) {
-                    // calculate remaining time
                     const elapsed = Math.floor((Date.now() - Number(savedStart)) / 1000);
                     const remaining = Number(savedDuration) - elapsed;
                     if (remaining > 0) {
@@ -59,7 +83,7 @@ const SmartParkingDashboard = () => {
                         setTimers((prev) => ({ ...prev, [slotKey]: 0 }));
                     }
                 } else {
-                    // start new timer
+
                     const startTime = Date.now();
                     localStorage.setItem(`timerStart_${slotKey}`, startTime);
                     localStorage.setItem(`timerDuration_${slotKey}`, 60);
@@ -69,7 +93,6 @@ const SmartParkingDashboard = () => {
         });
     }, [data]);
 
-    // Timer interval
     useEffect(() => {
         const interval = setInterval(() => {
             setTimers((prev) => {
@@ -109,9 +132,18 @@ const SmartParkingDashboard = () => {
             }
         });
     }, []);
-    console.log(bookings);
     const gateStatus = data?.GateStatus || "CLOSED";
-    const available = data?.AvailableSlots || 0;
+
+    const totalSlots = 3;
+
+    const bookedFromActive = activeSlots.map(b => b.slotNumber);
+
+    const bookedFromData = ["Slot1", "Slot2", "Slot3"].filter(slot => data?.[slot] === true);
+
+    const allBooked = new Set([...bookedFromActive, ...bookedFromData]);
+
+    const available = totalSlots - allBooked.size;
+
 
     return (<>
         <BookingModal></BookingModal>
@@ -139,6 +171,12 @@ const SmartParkingDashboard = () => {
                             <p className="mt-3 text-lg font-semibold">Slot {i}</p>
                             <span className="text-sm opacity-80 mt-1">
                                 {occupied ? "Occupied" : "Empty"}
+                            </span>
+                            <span className="text-xl opacity-80 mt-1">
+                                {
+                                    activeSlots.includes(i) ? 'Already Booked Now' : ''
+                                }
+
                             </span>
                             <div className="text-center mt-4 text-xl font-bold">
                                 {timers[`Slot${i}`] > 0 ? `⏳ Time Left: ${timers[`Slot${i}`]}s` : ""}
