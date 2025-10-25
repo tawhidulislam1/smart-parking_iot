@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { FaCar, FaCarSide, FaDoorOpen } from "react-icons/fa";
-import useAuth from "../hooks/useAuth";
+
 import BookingModal from "./BookingModal";
 
 // Firebase config
@@ -29,7 +29,6 @@ const SmartParkingDashboard = () => {
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [bookings, setBookings] = useState([]);
 
-    const { user } = useAuth()
 
     // Firebase listener
     useEffect(() => {
@@ -144,22 +143,13 @@ const SmartParkingDashboard = () => {
                             <div className="text-center mt-4 text-xl font-bold">
                                 {timers[`Slot${i}`] > 0 ? `⏳ Time Left: ${timers[`Slot${i}`]}s` : ""}
                             </div>
-                            {user ? (
-                                <button
-                                    onClick={() => handleBookNow(i)}
-                                    className="mt-4 bg-blue-500 cursor-pointer hover:bg-blue-600 text-white py-2 px-4 rounded transition"
-                                >
-                                    Book Now
-                                </button>
-                            ) : (
-                                <button
-                                    disabled
-                                    title="Please login to book"
-                                    className="mt-4 bg-gray-500 text-white py-2 px-4 rounded cursor-not-allowed opacity-70"
-                                >
-                                    Book Now
-                                </button>
-                            )}
+                            <button
+                                onClick={() => handleBookNow(i)}
+                                className="mt-4 bg-blue-500 cursor-pointer hover:bg-blue-600 text-white py-2 px-4 rounded transition"
+                            >
+                                Book Now
+                            </button>
+
 
                         </div>
                     );

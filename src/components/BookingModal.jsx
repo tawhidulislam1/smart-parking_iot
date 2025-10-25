@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { ref, push, set } from "firebase/database";
 import { db } from "../firebase/firebase.init";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const BookingModal = ({ isOpen, onClose, slotNumber }) => {
+    const { user } = useAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const timeSlots = [
         { label: "4:00 - 5:00 AM", start: 4, end: 5 },
@@ -24,6 +27,7 @@ const BookingModal = ({ isOpen, onClose, slotNumber }) => {
     const [date, setDate] = useState("");
     const [payment, setPayment] = useState(0);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const slot = timeSlots.find((s) => s.label === selectedSlot);
@@ -32,6 +36,10 @@ const BookingModal = ({ isOpen, onClose, slotNumber }) => {
 
     const handleBooking = async () => {
         if (!date) return alert("❗ Please select a date before confirming.");
+        if (!user) {
+            navigate('/login')
+            return
+        }
 
         setLoading(true);
 
@@ -68,7 +76,7 @@ Total: €${payment}`);
 
 
 
- 
+
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
