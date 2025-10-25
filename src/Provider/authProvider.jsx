@@ -32,22 +32,13 @@ const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const unsubcribe = onAuthStateChanged(auth, currentUser => {
-
-            if (currentUser) {
-                const email = currentUser.email;
-                console.log('email', email);
-            }
-            else {
-                setUser(null);
-                setLoading(false);
-            }
-
-            console.log("current user ", currentUser);
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser || null);
+            setLoading(false);
+            console.log("Current User:", currentUser);
         });
-        return () => {
-            return () => unsubcribe();
-        };
+
+        return () => unsubscribe();
     }, []);
 
     const AuthInfo = {

@@ -43,12 +43,16 @@ const Login = () => {
                     <input
                         type="email"
                         placeholder="Email Address"
+                        name="email"
+
                         className="p-3 rounded-md bg-gray-700 border border-gray-600 focus:border-blue-400 focus:outline-none"
                         required
                     />
                     <input
                         type="password"
                         placeholder="Password"
+                        name="password"
+
                         className="p-3 rounded-md bg-gray-700 border border-gray-600 focus:border-blue-400 focus:outline-none"
                         required
                     />

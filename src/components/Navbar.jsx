@@ -1,11 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import useAuth from "../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [user, setUser] = useState(null); // change to actual auth state later
-
+    const { user, logOut } = useAuth()
+    const handleLogOut = () => {
+        logOut()
+            .then(() => {
+                Swal.success("YOur are logout now");
+            })
+            .catch((error) => {
+                console.error("Logout failed:", error);
+            });
+    };
     const toggleMenu = () => setMenuOpen(!menuOpen);
 
     return (
@@ -45,7 +55,7 @@ const Navbar = () => {
                                     Profile
                                 </Link>
                                 <button
-                                    onClick={() => setUser(null)}
+                                    onClick={() => handleLogOut()}
                                     className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                                 >
                                     Logout
@@ -95,10 +105,8 @@ const Navbar = () => {
                                     Profile
                                 </Link>
                                 <button
-                                    onClick={() => {
-                                        setUser(null);
-                                        setMenuOpen(false);
-                                    }}
+                                    onClick={handleLogOut}
+
                                     className="text-gray-700 hover:text-blue-600 font-medium"
                                 >
                                     Logout
@@ -107,8 +115,9 @@ const Navbar = () => {
                         )}
                     </div>
                 </div>
-            )}
-        </nav>
+            )
+            }
+        </nav >
     );
 };
 
