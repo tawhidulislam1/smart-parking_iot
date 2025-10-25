@@ -27,6 +27,8 @@ const SmartParkingDashboard = () => {
     const [timers, setTimers] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(null);
+    const [bookings, setBookings] = useState([]);
+
     const { user } = useAuth()
 
     // Firebase listener
@@ -92,6 +94,23 @@ const SmartParkingDashboard = () => {
         setModalOpen(true);
     };
 
+    useEffect(() => {
+        const bookingRef = ref(db, "Bookings");
+
+        onValue(bookingRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const bookingArray = Object.entries(data).map(([id, value]) => ({
+                    id,
+                    ...value,
+                }));
+                setBookings(bookingArray);
+            } else {
+                setBookings([]);
+            }
+        });
+    }, []);
+    console.log(bookings);
     const gateStatus = data?.GateStatus || "CLOSED";
     const available = data?.AvailableSlots || 0;
 

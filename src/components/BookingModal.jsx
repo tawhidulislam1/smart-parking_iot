@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { ref, push, set, onValue } from "firebase/database";
+import { ref, push, set } from "firebase/database";
 import { db } from "../firebase/firebase.init";
 
 const BookingModal = ({ isOpen, onClose, slotNumber }) => {
-    const [bookings, setBookings] = useState([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const timeSlots = [
         { label: "4:00 - 5:00 AM", start: 4, end: 5 },
@@ -69,23 +68,7 @@ Total: €${payment}`);
 
 
 
-    useEffect(() => {
-        const bookingRef = ref(db, "Bookings");
-
-        onValue(bookingRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const bookingArray = Object.entries(data).map(([id, value]) => ({
-                    id,
-                    ...value,
-                }));
-                setBookings(bookingArray);
-            } else {
-                setBookings([]);
-            }
-        });
-    }, []);
-    console.log(bookings);
+ 
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
