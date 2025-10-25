@@ -175,7 +175,7 @@ const SmartParkingDashboard = () => {
     const available = data?.AvailableSlots || 0;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex flex-col items-center justify-center px-4 py-10">
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex flex-col items-center justify-center px-4 py-10 mt-14">
             <h1 className="text-3xl md:text-5xl font-bold text-center mb-10 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 Smart Parking Dashboard
             </h1>

@@ -11,6 +11,14 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
+  {
+    path: "login",
+    element: <Login />
+  },
+  {
+    path: "login",
+    element: <Resgister />
+  }
 ]);
 createRoot(document.getElementById('root')).render(
   <StrictMode>

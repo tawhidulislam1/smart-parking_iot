@@ -13,7 +13,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
                 {/* Logo */}
                 <Link to="/" className="text-2xl font-bold text-blue-600">
-                    codeHido
+                    Smart Parking
                 </Link>
 
                 {/* Desktop Menu */}
