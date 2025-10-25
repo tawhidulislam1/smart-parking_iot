@@ -19,6 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const BookingModal = ({ isOpen, onClose, slotNumber }) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const timeSlots = [
         { label: "4:00 - 5:00 AM", start: 4, end: 5 },
         { label: "5:00 - 6:00 AM", start: 5, end: 6 },
@@ -42,7 +43,7 @@ const BookingModal = ({ isOpen, onClose, slotNumber }) => {
     useEffect(() => {
         const slot = timeSlots.find((s) => s.label === selectedSlot);
         if (slot) setPayment((slot.end - slot.start) * ratePerHour);
-    }, [selectedSlot]);
+    }, [selectedSlot, timeSlots]);
 
     const handleBooking = () => {
         alert(`✅ Booking Confirmed:
