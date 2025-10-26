@@ -110,7 +110,7 @@ const SmartParkingDashboard = () => {
 
         return () => clearInterval(interval);
     }, []);
-
+    console.log(data);
     const handleBookNow = (slotNumber) => {
         setSelectedSlot(slotNumber);
         setModalOpen(true);
