@@ -9,6 +9,7 @@ import {
 import Login from './pages/Login.jsx';
 import Register from './pages/Resgister.jsx';
 import AuthProvider from './Provider/authProvider.jsx';
+import UserProfile from './pages/Profile.jsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "register",
     element: <Register />
+  },
+  {
+    path: "profile",
+    element: <UserProfile />
   }
 ]);
 createRoot(document.getElementById('root')).render(
