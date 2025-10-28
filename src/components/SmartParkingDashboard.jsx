@@ -62,6 +62,7 @@ const SmartParkingDashboard = () => {
         onValue(parkingRef, (snapshot) => {
             const val = snapshot.val();
             if (val) setData(val);
+            val.Slot1 = true;
         });
     }, []);
 
@@ -92,23 +93,36 @@ const SmartParkingDashboard = () => {
         });
     }, [data]);
 
+    const sendLocalNotification = (slot) => {
+        if (Notification.permission === "granted") {
+            new Notification("⏰ Slot Time Finished!", {
+                body: `Slot ${slot.replace("Slot", "")}  1 minute is finished!`,
+                icon: "/icon.png",
+            });
+        }
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             setTimers((prev) => {
                 const newTimers = { ...prev };
+
                 Object.keys(newTimers).forEach((slot) => {
                     if (newTimers[slot] > 0) {
                         newTimers[slot] -= 1;
-                    } else {
-                        newTimers[slot] = 0;
+                    } else if (newTimers[slot] === 0) {
+                        sendLocalNotification(slot);
                     }
                 });
+
                 return newTimers;
             });
         }, 1000);
 
         return () => clearInterval(interval);
     }, []);
+
+
     const handleBookNow = (slotNumber) => {
         setSelectedSlot(slotNumber);
         setModalOpen(true);
