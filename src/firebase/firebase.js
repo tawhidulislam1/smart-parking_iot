@@ -24,7 +24,7 @@ export const requestPermission = async () => {
         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
       });
       console.log("✅ FCM Token:", token);
-      alert("Notification permission granted!");
+
       return token;
     } else {
       alert("Notification permission denied!");
@@ -34,11 +34,20 @@ export const requestPermission = async () => {
   }
 };
 
-// 🔹 Listen for foreground messages
-onMessage(messaging, (payload) => {
-  console.log("Message received. ", payload);
-  new Notification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: "/icon.png",
-  });
+onMessage(messaging, async (payload) => {
+  console.log("📩 Foreground message received:", payload);
+
+  if (Notification.permission === "granted") {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration) {
+      registration.showNotification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: "/icon.png",
+      });
+    } else {
+      console.warn(
+        "⚠️ No service worker registration found for notifications."
+      );
+    }
+  }
 });
