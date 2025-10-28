@@ -11,7 +11,7 @@ const Register = () => {
     const onSubmit = async (data) => {
         try {
             const res = await createUser(data.email, data.password);
-            console.log("User created:", res);
+   
 
             await updateUser(data.name);
             Swal.fire({

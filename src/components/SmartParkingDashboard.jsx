@@ -49,8 +49,8 @@ const SmartParkingDashboard = () => {
         const slots = activeBookings.map(b => b.slotNumber);
         setActiveSlots(slots);
 
-        console.log("Active Booking IDs:", activeIds);
-        console.log("Active Slots:", slots);
+        // console.log("Active Booking IDs:", activeIds);
+        // console.log("Active Slots:", slots);
 
     }, [bookings]);
 
@@ -109,7 +109,6 @@ const SmartParkingDashboard = () => {
 
         return () => clearInterval(interval);
     }, []);
-    console.log(data);
     const handleBookNow = (slotNumber) => {
         setSelectedSlot(slotNumber);
         setModalOpen(true);
