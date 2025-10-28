@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { FaCar, FaCarSide, FaDoorOpen } from "react-icons/fa";
-
+import { onMessage } from "firebase/messaging";
 import BookingModal from "./BookingModal";
+import { messaging } from "../firebase/firebase";
 
 // Firebase config
 const firebaseConfig = {
@@ -93,15 +94,46 @@ const SmartParkingDashboard = () => {
         });
     }, [data]);
 
-    const sendLocalNotification = (slot) => {
+    const sendLocalNotification = async (slot) => {
         if (Notification.permission === "granted") {
-            new Notification("⏰ Slot Time Finished!", {
-                body: `Slot ${slot.replace("Slot", "")}  1 minute is finished!`,
-                icon: "/icon.png",
-            });
+            const registration = await navigator.serviceWorker.getRegistration();
+            if (registration) {
+                registration.showNotification("⏰ Slot Time Finished!", {
+                    body: `Slot ${slot.replace("Slot", "")} 1 minute is finished!`,
+                    icon: "/icon.png",
+                });
+            } else {
+                alert(`Slot ${slot.replace("Slot", "")} 1 minute is finished!`);
+            }
         }
     };
+    useEffect(() => {
+        // Handle FCM messages while app is in foreground
+        const unsubscribe = onMessage(messaging, async (payload) => {
+            console.log("📩 Foreground message received:", payload);
 
+            if (Notification.permission === "granted") {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    registration.showNotification(
+                        payload.notification.title,
+                        {
+                            body: payload.notification.body,
+                            icon: "/icon.png",
+                        }
+                    );
+                } else {
+                    // fallback if service worker is not found
+                    alert(`${payload.notification.title}\n${payload.notification.body}`);
+                }
+            }
+        });
+
+        return () => {
+            // cleanup (not strictly necessary)
+            if (unsubscribe) unsubscribe();
+        };
+    }, []);
     useEffect(() => {
         const interval = setInterval(() => {
             setTimers((prev) => {
