@@ -62,7 +62,6 @@ const SmartParkingDashboard = () => {
         onValue(parkingRef, (snapshot) => {
             const val = snapshot.val();
             if (val) setData(val);
-            val.Slot1 = true
         });
     }, []);
 
